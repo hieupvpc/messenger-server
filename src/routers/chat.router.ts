@@ -12,5 +12,7 @@ export const chatRouter = ({ middlwares, controllers }: ICradle) => {
 
   routers.delete('/delete', verifyAccessToken, chatController.deleteChat)
 
+  routers.patch('/read', verifyAccessToken, chatController.updateReaded)
+
   return routers
 }

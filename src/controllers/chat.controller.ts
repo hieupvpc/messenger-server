@@ -25,7 +25,9 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
         host_id: req.userId,
         guest_id: guestId,
         guest_chat_id: guestChatId,
+        readed: true,
       })
+      const newChatInfo = await chatService.findOneById(newChat.id)
       if (existingGuestChat) {
         await chatService.updateOneGuestChatId(newChat.id, existingGuestChat.id)
         await cache.delCache(`list chats of user: ${guestId}`)
@@ -34,7 +36,7 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
       return responseHelper.responseSuccess(
         res,
         'Create a new chat successfully',
-        { new_chat: newChat },
+        { new_chat: newChatInfo },
       )
     } catch (error) {
       console.log(error)
@@ -79,6 +81,23 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
       await cache.delCache(`list chats of user: ${req.userId}`)
       return responseHelper.responseSuccess(res, 'Delete chat successfully', {
         deleted_chat: deletedChat,
+        chat_id: chatId,
+        guest_chat_id: guestChatId,
+        guest_id: guestId,
+      })
+    } catch (error) {
+      console.log(error)
+      return responseHelper.internalServerError(res)
+    }
+  }
+
+  const updateReaded = async (req: any, res: Response) => {
+    const chat_id = req.body.chat_id?.trim()
+    try {
+      await chatService.updateOneReaded(chat_id, true)
+      await cache.delCache(`list chats of user: ${req.userId}`)
+      return responseHelper.responseSuccess(res, 'Update readed successfully', {
+        chat_id,
       })
     } catch (error) {
       console.log(error)
@@ -90,5 +109,6 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
     createNewChat,
     getListChats,
     deleteChat,
+    updateReaded,
   }
 }

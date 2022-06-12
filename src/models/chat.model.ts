@@ -5,6 +5,7 @@ export interface chatAttributes {
   host_id: string
   guest_id: string
   guest_chat_id: string | null
+  readed: boolean
   created_at?: Date
   updated_at?: Date
   deleted_at?: Date
@@ -21,6 +22,7 @@ export class chats
   host_id: string
   guest_id: string
   guest_chat_id: string | null
+  readed: boolean
   created_at?: Date | undefined
   updated_at?: Date | undefined
   deleted_at?: Date | undefined
@@ -57,6 +59,10 @@ export class chats
             model: 'chats',
             key: 'id',
           },
+        },
+        readed: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
         },
         created_at: {
           type: DataTypes.DATE,

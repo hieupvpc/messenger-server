@@ -10,6 +10,7 @@ export interface ICreateChatDto {
   host_id: string
   guest_id: string
   guest_chat_id: string | null
+  readed: boolean
 }
 
 export interface ICreateMessageDto {

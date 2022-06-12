@@ -65,7 +65,7 @@ export class users
           allowNull: false,
         },
         avatar: {
-          type: DataTypes.STRING(1000),
+          type: DataTypes.STRING(6000),
           allowNull: true,
         },
         status_online: {

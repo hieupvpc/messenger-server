@@ -14,7 +14,7 @@ POST http://localhost:4000/user/login
 Content-Type: application/json
 
 {
-    "phone_or_email": "phamhieu2404@gmail.com",
+    "phone_or_email": "phamvanhieu2404@gmail.com",
     "password": "Phamhieu244"
 }
 
@@ -40,7 +40,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMDE4Z
 ###
 
 GET http://localhost:4000/user/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMDE4ZDAxMy00MzA2LTQ3YTEtYTgwNS01ZTk2OGRjNTU3N2MiLCJpYXQiOjE2NTQ1MDg2NjN9.lFhMAchUjJwlg7qnTC8Ecp5NTqkLlWXlBM1YfrnxqHQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg4ZmM0MS1jMGRlLTQ0Y2EtOTA3Ni1iNmJmYzJjZWY4MDciLCJpYXQiOjE2NTQ3NjQ4NDJ9.x2EIrZPwLxyH5_anNG3aDdazS3HwNgzsiHEM7nwM_Vk
 
 ###
 
@@ -60,7 +60,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZjJiZ
 ###
 
 GET http://localhost:4000/chat/get
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZjJiZGZhZi00OTBjLTQzYTYtYTc4OC1kNWU2MjM5ODBlZDAiLCJpYXQiOjE2NTQ1MTA3NzJ9.5LY_m500pGwxZDKrM94w0-OVUgaaSEvKoozYwV6aOVs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg4ZmM0MS1jMGRlLTQ0Y2EtOTA3Ni1iNmJmYzJjZWY4MDciLCJpYXQiOjE2NTQ3NjQ4NDJ9.x2EIrZPwLxyH5_anNG3aDdazS3HwNgzsiHEM7nwM_Vk
 
 ###
 
@@ -83,7 +83,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZjJiZ
 
 ###
 
-GET http://localhost:4000/message/a5c7b03e-4ec3-4093-931e-50dcbe4702ed
+GET http://localhost:4000/message/get/a5c7b03e-4ec3-4093-931e-50dcbe4702ed
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZjJiZGZhZi00OTBjLTQzYTYtYTc4OC1kNWU2MjM5ODBlZDAiLCJpYXQiOjE2NTQ1MTA3NzJ9.5LY_m500pGwxZDKrM94w0-OVUgaaSEvKoozYwV6aOVs
 
 ###

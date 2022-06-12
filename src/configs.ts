@@ -7,6 +7,7 @@ import { ICradle } from './container'
 import pg from 'pg'
 import { Dialect, Sequelize } from 'sequelize'
 import { models } from './models'
+import { sockets } from './sockets'
 
 export const initSequelize = ({ envs }: ICradle) => {
   const sequelize = new Sequelize(
@@ -57,4 +58,6 @@ export const startServer = ({ envs, routers }: ICradle) => {
   app.use(compression())
 
   app.use(routers)
+
+  sockets(server)
 }

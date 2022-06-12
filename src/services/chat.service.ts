@@ -31,6 +31,54 @@ export const chatService = ({ initSequelize }: ICradle) => {
   const createOne = async (createChatDto: ICreateChatDto) =>
     await chats.create(createChatDto)
 
+  const findOneById = async (chat_id: string) =>
+    await chats.findOne({
+      where: {
+        id: chat_id,
+      },
+      attributes: {
+        exclude: ['host_id', 'guest_id'],
+      },
+      include: [
+        {
+          model: users,
+          as: 'host',
+          foreignKey: 'host_id',
+          attributes: {
+            exclude: [
+              'phone_number',
+              'email',
+              'password',
+              'created_at',
+              'updated_at',
+              'deleted_at',
+            ],
+          },
+        },
+        {
+          model: users,
+          as: 'guest',
+          foreignKey: 'guest_id',
+          attributes: {
+            exclude: [
+              'phone_number',
+              'email',
+              'password',
+              'created_at',
+              'updated_at',
+              'deleted_at',
+            ],
+          },
+        },
+        {
+          model: messages,
+          as: 'last_message',
+          order: [['created_at', 'DESC']],
+          limit: 1,
+        },
+      ],
+    })
+
   const findByHostId = async (host_id: string) =>
     await chats.findAll({
       where: {
@@ -76,9 +124,6 @@ export const chatService = ({ initSequelize }: ICradle) => {
           as: 'last_message',
           order: [['created_at', 'DESC']],
           limit: 1,
-          attributes: {
-            exclude: ['receiver_id', 'chat_id', 'updated_at', 'deleted_at'],
-          },
         },
       ],
     })
@@ -91,11 +136,24 @@ export const chatService = ({ initSequelize }: ICradle) => {
       },
     })
 
+  const updateOneReaded = async (chat_id: string, readed: boolean) =>
+    await chats.update(
+      { readed },
+      {
+        where: {
+          id: chat_id,
+        },
+        returning: true,
+      },
+    )
+
   return {
     findOneByHostGuestId,
     updateOneGuestChatId,
     createOne,
     findByHostId,
     deleteOne,
+    findOneById,
+    updateOneReaded,
   }
 }

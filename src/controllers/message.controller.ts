@@ -22,11 +22,13 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
     if (guestId === req.userId)
       return responseHelper.badRequest(res, 'Cannot send message!')
     try {
+      let newGuestChat = null
       if (guestChatId === null) {
-        const newGuestChat = await chatService.createOne({
+        newGuestChat = await chatService.createOne({
           host_id: guestId,
           guest_id: req.userId,
           guest_chat_id: chatId,
+          readed: true,
         })
         guestChatId = newGuestChat.id
         await chatService.updateOneGuestChatId(newGuestChat.id, chatId)
@@ -41,13 +43,20 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
       const newMessage = await messageService.createOne(
         createNewMessage(chatId),
       )
-      await messageService.createOne(createNewMessage(guestChatId))
+      const newGuestMessage = await messageService.createOne(
+        createNewMessage(guestChatId),
+      )
+      await chatService.updateOneReaded(guestChatId, false)
       await cache.delCache(`list messages of chat: ${chatId}`)
       await cache.delCache(`list messages of chat: ${guestChatId}`)
       await cache.delCache(`list chats of user: ${req.userId}`)
       await cache.delCache(`list chats of user: ${guestId}`)
+      newGuestChat =
+        newGuestChat && (await chatService.findOneById(newGuestChat.id))
       return responseHelper.responseSuccess(res, 'Send message successfully', {
         new_message: newMessage,
+        new_guest_message: newGuestMessage,
+        new_guest_chat: newGuestChat,
       })
     } catch (error) {
       console.log(error)

@@ -108,7 +108,7 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
   }
 
   const changeAvatar = async (req: any, res: Response) => {
-    const newAvatar = req.body.new_avatar.trim() || null
+    const newAvatar = req.body.new_avatar?.trim() || null
     try {
       const updatedUser = (
         await userService.updateOneAvatar(newAvatar, req.userId)
