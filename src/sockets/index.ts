@@ -26,6 +26,10 @@ export const sockets = (server: HttpServer) => {
       io.emit(`listen update guest_chat_id of user: ${data.guest.id}`, data)
     })
 
+    socket.on('typing', (data) => {
+      io.emit(`listen typing of chat: ${data.chat_id}`, data.value)
+    })
+
     socket.on('disconnect', () =>
       console.log(`a user disconnected ${socket.id}`),
     )
