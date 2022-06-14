@@ -42,5 +42,11 @@ export const userRouter = ({ middlwares, controllers }: ICradle) => {
     userController.searchUsers,
   )
 
+  routers.patch(
+    '/status_online',
+    verifyTokenMiddleware.verifyAccessToken,
+    userController.updateStatusOnline,
+  )
+
   return routers
 }

@@ -76,14 +76,10 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
             req.type === 'email' ? 'Email' : 'Phone number'
           } or password incorrect, please try again!`,
         )
-      await userService.updateOneStatusOnline(true, existingUser.id)
       const accessToken = sign(
         { userId: existingUser.id },
         envs.ACCESS_TOKEN_SECRET,
       )
-      await cache.delCache(`info of user: ${existingUser.id}`)
-      await cache.delCacheByPattern('list users searched by pattern:*')
-      await cache.delCacheByPattern('list chats of user:*')
       return responseHelper.responseSuccess(res, 'Logged in successfully', {
         access_token: accessToken,
       })
@@ -165,6 +161,26 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
     }
   }
 
+  const updateStatusOnline = async (req: any, res: Response) => {
+    const statusOnline = req.body.status_online
+    try {
+      await userService.updateOneStatusOnline(statusOnline, req.userId)
+      await cache.delCache(`info of user: ${req.userId}`)
+      await cache.delCacheByPattern('list users searched by pattern:*')
+      await cache.delCacheByPattern('list chats of user:*')
+      return responseHelper.responseSuccess(
+        res,
+        'Update status online successfully',
+        {
+          status_online: statusOnline,
+        },
+      )
+    } catch (error) {
+      console.log(error)
+      return responseHelper.internalServerError(res)
+    }
+  }
+
   return {
     registerNewUser,
     loginAccountUser,
@@ -172,5 +188,6 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
     changeAvatar,
     getMyInfo,
     searchUsers,
+    updateStatusOnline,
   }
 }
