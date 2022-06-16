@@ -147,6 +147,62 @@ export const chatService = ({ initSequelize }: ICradle) => {
       },
     )
 
+  const updateOneNickname = async (
+    data: {
+      nickname_host: string | null
+      nickname_guest: string | null
+    },
+    chat_id: string,
+  ) =>
+    await chats.update(data, {
+      where: {
+        id: chat_id,
+      },
+      returning: true,
+    })
+
+  const updateOneColor = async (color: string, chat_id: string) =>
+    await chats.update(
+      {
+        color,
+      },
+      {
+        where: {
+          id: chat_id,
+        },
+        returning: true,
+      },
+    )
+
+  const updateOneBackgroundColor = async (
+    background_color: string,
+    chat_id: string,
+  ) =>
+    await chats.update(
+      {
+        background_color,
+      },
+      {
+        where: {
+          id: chat_id,
+        },
+        returning: true,
+      },
+    )
+
+  const updateOneEmoji = async (emoji: string, chat_id: string) =>
+    await chats.update(
+      {
+        emoji,
+      },
+      {
+        where: {
+          id: chat_id,
+        },
+        returning: true,
+      },
+    )
+
   return {
     findOneByHostGuestId,
     updateOneGuestChatId,
@@ -155,5 +211,9 @@ export const chatService = ({ initSequelize }: ICradle) => {
     deleteOne,
     findOneById,
     updateOneReaded,
+    updateOneNickname,
+    updateOneColor,
+    updateOneBackgroundColor,
+    updateOneEmoji,
   }
 }

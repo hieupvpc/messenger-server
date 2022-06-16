@@ -43,7 +43,14 @@ export class messages
           allowNull: false,
         },
         type: {
-          type: DataTypes.ENUM('text', 'icon', 'image', 'voice', 'video'),
+          type: DataTypes.ENUM(
+            'text',
+            'icon',
+            'image',
+            'voice',
+            'video',
+            'config',
+          ),
           allowNull: false,
         },
         sender_id: {

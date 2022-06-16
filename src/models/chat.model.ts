@@ -4,8 +4,13 @@ export interface chatAttributes {
   id: string
   host_id: string
   guest_id: string
+  nickname_host?: string | null
+  nickname_guest?: string | null
   guest_chat_id: string | null
   readed: boolean
+  color?: string
+  background_color?: string
+  emoji?: string
   created_at?: Date
   updated_at?: Date
   deleted_at?: Date
@@ -21,8 +26,13 @@ export class chats
   id: string
   host_id: string
   guest_id: string
+  nickname_host?: string | null | undefined
+  nickname_guest?: string | null | undefined
   guest_chat_id: string | null
   readed: boolean
+  color: string | undefined
+  background_color?: string | undefined
+  emoji?: string | undefined
   created_at?: Date | undefined
   updated_at?: Date | undefined
   deleted_at?: Date | undefined
@@ -52,6 +62,14 @@ export class chats
             key: 'id',
           },
         },
+        nickname_host: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
+        nickname_guest: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
         guest_chat_id: {
           type: DataTypes.UUID,
           allowNull: true,
@@ -63,6 +81,21 @@ export class chats
         readed: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
+        },
+        color: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          defaultValue: '#0a7cff',
+        },
+        background_color: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          defaultValue: '#fff',
+        },
+        emoji: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          defaultValue: 'fas fa-thumbs-up',
         },
         created_at: {
           type: DataTypes.DATE,

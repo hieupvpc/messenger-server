@@ -30,6 +30,25 @@ export const sockets = (server: HttpServer) => {
       io.emit(`listen typing of chat: ${data.chat_id}`, data.value)
     })
 
+    socket.on('change color', (data) => {
+      io.emit(`listen change chat color of user: ${data.guest_id}`, data)
+    })
+
+    socket.on('change background color', (data) => {
+      io.emit(
+        `listen change chat background color of user: ${data.guest_id}`,
+        data,
+      )
+    })
+
+    socket.on('change emoji', (data) => {
+      io.emit(`listen change chat emoji of user: ${data.guest_id}`, data)
+    })
+
+    socket.on('change nickname', (data) => {
+      io.emit(`listen change chat nickname of user: ${data.guest_id}`, data)
+    })
+
     socket.on('disconnect', () =>
       console.log(`a user disconnected ${socket.id}`),
     )

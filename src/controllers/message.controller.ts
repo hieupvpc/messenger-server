@@ -12,9 +12,14 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
     const chatId = req.body.chat_id.trim()
     const guestId = req.body.guest_id.trim()
     let guestChatId = req.body.guest_chat_id?.trim() || null
+    const nicknameHost = req.body.nickname_host?.trim() || null
+    const nicknameGuest = req.body.nickname_guest?.trim() || null
+    const color = req.body.color
+    const emoji = req.body.emoji
+    const backgroundColor = req.body.background_color
     if (
       !content ||
-      !['text', 'icon', 'image', 'voice', 'video'].includes(type) ||
+      !['text', 'icon', 'image', 'voice', 'video', 'config'].includes(type) ||
       !chatId ||
       !guestId
     )
@@ -29,6 +34,11 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
           guest_id: req.userId,
           guest_chat_id: chatId,
           readed: true,
+          nickname_host: nicknameGuest,
+          nickname_guest: nicknameHost,
+          color,
+          background_color: backgroundColor,
+          emoji,
         })
         guestChatId = newGuestChat.id
         await chatService.updateOneGuestChatId(newGuestChat.id, chatId)

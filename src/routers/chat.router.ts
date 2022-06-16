@@ -14,5 +14,17 @@ export const chatRouter = ({ middlwares, controllers }: ICradle) => {
 
   routers.patch('/read', verifyAccessToken, chatController.updateReaded)
 
+  routers.patch('/nickname', verifyAccessToken, chatController.updateNickname)
+
+  routers.patch('/color', verifyAccessToken, chatController.updateColor)
+
+  routers.patch('/emoji', verifyAccessToken, chatController.updateEmoji)
+
+  routers.patch(
+    '/background_color',
+    verifyAccessToken,
+    chatController.updateBackgroundColor,
+  )
+
   return routers
 }
