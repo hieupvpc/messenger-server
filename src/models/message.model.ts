@@ -39,7 +39,7 @@ export class messages
           defaultValue: DataTypes.UUIDV4,
         },
         content: {
-          type: DataTypes.STRING,
+          type: DataTypes.TEXT,
           allowNull: false,
         },
         type: {

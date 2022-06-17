@@ -9,7 +9,7 @@ import { ICradle } from '../container'
 import { BACKGROUND_COLORS, MAIN_COLORS, MAIN_EMOJIS } from '../constants'
 
 export const chatController = ({ helpers, services, cache }: ICradle) => {
-  const { responseHelper } = helpers
+  const { responseHelper, cacheHelper } = helpers
   const { chatService, messageService } = services
 
   const createNewChat = async (req: any, res: Response) => {
@@ -42,9 +42,9 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
       const newChatInfo = await chatService.findOneById(newChat.id)
       if (existingGuestChat) {
         await chatService.updateOneGuestChatId(newChat.id, existingGuestChat.id)
-        await cache.delCache(`list chats of user: ${guestId}`)
+        await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       }
-      await cache.delCache(`list chats of user: ${req.userId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
       return responseHelper.responseSuccess(
         res,
         'Create a new chat successfully',
@@ -58,10 +58,12 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
 
   const getListChats = async (req: any, res: Response) => {
     try {
-      let listChats = await cache.getCache(`list chats of user: ${req.userId}`)
+      let listChats = await cache.getCache(
+        cacheHelper.listChatsOfUser(req.userId),
+      )
       if (listChats === null) {
         listChats = await chatService.findByHostId(req.userId)
-        await cache.setCache(`list chats of user: ${req.userId}`, listChats)
+        await cache.setCache(cacheHelper.listChatsOfUser(req.userId), listChats)
       }
       return responseHelper.responseSuccess(
         res,
@@ -86,11 +88,12 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
       if (deletedChat === 0)
         return responseHelper.badRequest(res, 'Cannot delete chat room!')
       await messageService.deleteByChatId(chatId)
+      await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(chatId))
       if (guestChatId) {
         await chatService.updateOneGuestChatId(null, guestChatId)
-        await cache.delCache(`list chats of user: ${guestId}`)
+        await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       }
-      await cache.delCache(`list chats of user: ${req.userId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
       return responseHelper.responseSuccess(res, 'Delete chat successfully', {
         deleted_chat: deletedChat,
         chat_id: chatId,
@@ -107,7 +110,7 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
     const chat_id = req.body.chat_id?.trim()
     try {
       await chatService.updateOneReaded(chat_id, true)
-      await cache.delCache(`list chats of user: ${req.userId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
       return responseHelper.responseSuccess(res, 'Update readed successfully', {
         chat_id,
       })
@@ -131,8 +134,8 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
         },
         guestChatId,
       )
-      await cache.delCache(`list chats of user: ${req.userId}`)
-      await cache.delCache(`list chats of user: ${guestId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
+      await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       return responseHelper.responseSuccess(
         res,
         'Update nickname successfully',
@@ -160,8 +163,8 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
     try {
       await chatService.updateOneColor(color, chatId)
       await chatService.updateOneColor(color, guestChatId)
-      await cache.delCache(`list chats of user: ${req.userId}`)
-      await cache.delCache(`list chats of user: ${guestId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
+      await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       return responseHelper.responseSuccess(res, 'Change color successfully', {
         color,
         guest_chat_id: guestChatId,
@@ -186,8 +189,8 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
     try {
       await chatService.updateOneBackgroundColor(backgroundColor, chatId)
       await chatService.updateOneBackgroundColor(backgroundColor, guestChatId)
-      await cache.delCache(`list chats of user: ${req.userId}`)
-      await cache.delCache(`list chats of user: ${guestId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
+      await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       return responseHelper.responseSuccess(
         res,
         'Change background color successfully',
@@ -215,8 +218,8 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
     try {
       await chatService.updateOneEmoji(emoji, chatId)
       await chatService.updateOneEmoji(emoji, guestChatId)
-      await cache.delCache(`list chats of user: ${req.userId}`)
-      await cache.delCache(`list chats of user: ${guestId}`)
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
+      await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       return responseHelper.responseSuccess(res, 'Change emoji successfully', {
         emoji,
         guest_chat_id: guestChatId,

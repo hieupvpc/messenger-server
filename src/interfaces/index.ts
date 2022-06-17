@@ -36,6 +36,15 @@ export interface IUpdateNicknameDto {
   guest_id: string
 }
 
+export enum TYPE_MESSAGE {
+  TEXT = 'text',
+  ICON = 'icon',
+  IMAGE = 'image',
+  VOICE = 'voice',
+  VIDEO = 'video',
+  CONFIG = 'config',
+}
+
 export enum MAIN_COLOR {
   PRIMARY = '#0a7cff',
   SECONDARY = '#6c757d',

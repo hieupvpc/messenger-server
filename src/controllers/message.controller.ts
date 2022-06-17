@@ -1,9 +1,9 @@
 import { Response } from 'express'
-import { ICreateMessageDto } from '../interfaces'
+import { ICreateMessageDto, TYPE_MESSAGE } from '../interfaces'
 import { ICradle } from '../container'
 
 export const messageController = ({ helpers, services, cache }: ICradle) => {
-  const { responseHelper } = helpers
+  const { responseHelper, cacheHelper } = helpers
   const { chatService, messageService } = services
 
   const sendMessage = async (req: any, res: Response) => {
@@ -19,7 +19,14 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
     const backgroundColor = req.body.background_color
     if (
       !content ||
-      !['text', 'icon', 'image', 'voice', 'video', 'config'].includes(type) ||
+      ![
+        TYPE_MESSAGE.TEXT,
+        TYPE_MESSAGE.ICON,
+        TYPE_MESSAGE.IMAGE,
+        TYPE_MESSAGE.VOICE,
+        TYPE_MESSAGE.VIDEO,
+        TYPE_MESSAGE.CONFIG,
+      ].includes(type) ||
       !chatId ||
       !guestId
     )
@@ -57,10 +64,10 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
         createNewMessage(guestChatId),
       )
       await chatService.updateOneReaded(guestChatId, false)
-      await cache.delCache(`list messages of chat: ${chatId}`)
-      await cache.delCache(`list messages of chat: ${guestChatId}`)
-      await cache.delCache(`list chats of user: ${req.userId}`)
-      await cache.delCache(`list chats of user: ${guestId}`)
+      await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(chatId))
+      await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(guestChatId))
+      await cache.delCache(cacheHelper.listChatsOfUser(req.userId))
+      await cache.delCache(cacheHelper.listChatsOfUser(guestId))
       newGuestChat =
         newGuestChat && (await chatService.findOneById(newGuestChat.id))
       return responseHelper.responseSuccess(res, 'Send message successfully', {
@@ -75,14 +82,18 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
   }
 
   const getListMessages = async (req: any, res: Response) => {
-    const chatId = req.params.chat_id?.trim() || null
+    const chatId = req.query.chat_id?.trim() || null
+    const page: number = req.query.page
     try {
       let listMessages = await cache.getCache(
-        `list messages of chat: ${chatId}`,
+        cacheHelper.listMessagesOfChatOfPage(chatId, page),
       )
       if (listMessages === null) {
-        listMessages = await messageService.findByChatId(chatId)
-        await cache.setCache(`list messages of chat: ${chatId}`, listMessages)
+        listMessages = await messageService.findByChatId(chatId, page)
+        await cache.setCache(
+          cacheHelper.listMessagesOfChatOfPage(chatId, page),
+          listMessages,
+        )
       }
       return responseHelper.responseSuccess(
         res,

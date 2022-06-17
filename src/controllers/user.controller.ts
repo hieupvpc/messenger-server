@@ -4,7 +4,7 @@ import { sign } from 'jsonwebtoken'
 import { ICradle } from '../container'
 
 export const userController = ({ helpers, services, envs, cache }: ICradle) => {
-  const { responseHelper, convertHelper } = helpers
+  const { responseHelper, convertHelper, cacheHelper } = helpers
   const { userService } = services
 
   const registerNewUser = async (req: any, res: Response) => {
@@ -39,7 +39,7 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
           ? createNewUser(null, phoneOrEmail)
           : createNewUser(phoneOrEmail, null),
       )
-      await cache.delCacheByPattern('list users searched by pattern:*')
+      await cache.delCacheByPattern(cacheHelper.listUsersSearchedByPattern())
       return responseHelper.responseSuccess(
         res,
         'Successful account registration',
@@ -93,9 +93,9 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
     try {
       await userService.updateOneStatusOnline(false, req.userId)
       await userService.updateOneLastLogout(req.userId)
-      await cache.delCache(`info of user: ${req.userId}`)
-      await cache.delCacheByPattern('list users searched by pattern:*')
-      await cache.delCacheByPattern('list chats of user:*')
+      await cache.delCache(cacheHelper.infoOfUser(req.userId))
+      await cache.delCacheByPattern(cacheHelper.listUsersSearchedByPattern())
+      await cache.delCacheByPattern(cacheHelper.listChatsOfUser())
       return responseHelper.responseSuccess(res, 'Log out account successfully')
     } catch (error) {
       console.log(error)
@@ -109,9 +109,9 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
       const updatedUser = (
         await userService.updateOneAvatar(newAvatar, req.userId)
       )[1][0]
-      await cache.delCache(`info of user: ${req.userId}`)
-      await cache.delCacheByPattern('list users searched by pattern:*')
-      await cache.delCacheByPattern('list chats of user:*')
+      await cache.delCache(cacheHelper.infoOfUser(req.userId))
+      await cache.delCacheByPattern(cacheHelper.listUsersSearchedByPattern())
+      await cache.delCacheByPattern(cacheHelper.listChatsOfUser())
       return responseHelper.responseSuccess(
         res,
         'Update new avatar successfully',
@@ -125,10 +125,10 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
 
   const getMyInfo = async (req: any, res: Response) => {
     try {
-      let myInfo = await cache.getCache(`info of user: ${req.userId}`)
+      let myInfo = await cache.getCache(cacheHelper.infoOfUser(req.userId))
       if (myInfo === null) {
         myInfo = await userService.findOneById(req.userId)
-        await cache.setCache(`info of user: ${req.userId}`, myInfo)
+        await cache.setCache(cacheHelper.infoOfUser(req.userId), myInfo)
       }
       return responseHelper.responseSuccess(res, 'Get my info successfully', {
         my_info: myInfo,
@@ -143,12 +143,12 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
     const pattern = req.query.pattern.trim()
     try {
       let listUsers = await cache.getCache(
-        `list users searched by pattern: ${pattern}`,
+        cacheHelper.listUsersSearchedByPattern(pattern),
       )
       if (listUsers === null) {
         listUsers = await userService.findByPattern(pattern)
         await cache.setCache(
-          `list users searched by pattern: ${pattern}`,
+          cacheHelper.listUsersSearchedByPattern(pattern),
           listUsers,
         )
       }
@@ -165,9 +165,9 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
     const statusOnline = req.body.status_online
     try {
       await userService.updateOneStatusOnline(statusOnline, req.userId)
-      await cache.delCache(`info of user: ${req.userId}`)
-      await cache.delCacheByPattern('list users searched by pattern:*')
-      await cache.delCacheByPattern('list chats of user:*')
+      await cache.delCache(cacheHelper.infoOfUser(req.userId))
+      await cache.delCacheByPattern(cacheHelper.listUsersSearchedByPattern())
+      await cache.delCacheByPattern(cacheHelper.listChatsOfUser())
       return responseHelper.responseSuccess(
         res,
         'Update status online successfully',

@@ -8,11 +8,7 @@ export const messageRouter = ({ middlwares, controllers }: ICradle) => {
 
   routers.post('/send', verifyAccessToken, messageController.sendMessage)
 
-  routers.get(
-    '/get/:chat_id',
-    verifyAccessToken,
-    messageController.getListMessages,
-  )
+  routers.get('/get', verifyAccessToken, messageController.getListMessages)
 
   return routers
 }
