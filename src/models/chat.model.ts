@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize'
 
 export interface chatAttributes {
@@ -11,6 +12,7 @@ export interface chatAttributes {
   color?: string
   background_color?: string
   emoji?: string
+  last_message_time?: Date | null
   created_at?: Date
   updated_at?: Date
   deleted_at?: Date
@@ -33,6 +35,7 @@ export class chats
   color: string | undefined
   background_color?: string | undefined
   emoji?: string | undefined
+  last_message_time?: Date | null | undefined
   created_at?: Date | undefined
   updated_at?: Date | undefined
   deleted_at?: Date | undefined
@@ -96,6 +99,11 @@ export class chats
           type: DataTypes.STRING,
           allowNull: true,
           defaultValue: 'fas fa-thumbs-up',
+        },
+        last_message_time: {
+          type: DataTypes.DATE,
+          allowNull: true,
+          defaultValue: moment(),
         },
         created_at: {
           type: DataTypes.DATE,

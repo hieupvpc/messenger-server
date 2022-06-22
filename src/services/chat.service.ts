@@ -84,7 +84,7 @@ export const chatService = ({ initSequelize }: ICradle) => {
       where: {
         host_id,
       },
-      order: [['created_at', 'DESC']],
+      order: [['last_message_time', 'DESC']],
       attributes: {
         exclude: ['host_id', 'guest_id'],
       },
@@ -203,6 +203,22 @@ export const chatService = ({ initSequelize }: ICradle) => {
       },
     )
 
+  const updateOneLastMessageTime = async (
+    last_message_time: Date,
+    chat_id: string,
+  ) =>
+    await chats.update(
+      {
+        last_message_time,
+      },
+      {
+        where: {
+          id: chat_id,
+        },
+        returning: true,
+      },
+    )
+
   return {
     findOneByHostGuestId,
     updateOneGuestChatId,
@@ -215,5 +231,6 @@ export const chatService = ({ initSequelize }: ICradle) => {
     updateOneColor,
     updateOneBackgroundColor,
     updateOneEmoji,
+    updateOneLastMessageTime,
   }
 }

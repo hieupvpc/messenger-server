@@ -63,6 +63,14 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
       const newGuestMessage = await messageService.createOne(
         createNewMessage(guestChatId),
       )
+      await chatService.updateOneLastMessageTime(
+        newMessage.created_at as Date,
+        chatId,
+      )
+      await chatService.updateOneLastMessageTime(
+        newGuestMessage.created_at as Date,
+        guestChatId,
+      )
       await chatService.updateOneReaded(guestChatId, false)
       await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(chatId))
       await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(guestChatId))
