@@ -140,7 +140,9 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
   }
 
   const searchUsers = async (req: any, res: Response) => {
-    const pattern = req.query.pattern.trim()
+    let pattern = req.query.pattern?.trim() || null
+    if (!pattern) return responseHelper.badRequest(res, 'Pattern is required!')
+    pattern = convertHelper.removeAccents(pattern)
     try {
       let listUsers = await cache.getCache(
         cacheHelper.listUsersSearchedByPattern(pattern),

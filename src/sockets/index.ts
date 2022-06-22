@@ -49,6 +49,10 @@ export const sockets = (server: HttpServer) => {
       io.emit(`listen change chat nickname of user: ${data.guest_id}`, data)
     })
 
+    socket.on('update status online', (data) => {
+      io.emit('listen update status online', data)
+    })
+
     socket.on('disconnect', () =>
       console.log(`a user disconnected ${socket.id}`),
     )
