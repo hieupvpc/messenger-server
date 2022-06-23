@@ -7,6 +7,8 @@ export interface messageAttributes {
   sender_id: string
   receiver_id: string
   chat_id: string
+  guest_message_id: string | null
+  emoji: string | null
   created_at?: Date
   updated_at?: Date
   deleted_at?: Date
@@ -25,6 +27,8 @@ export class messages
   sender_id: string
   receiver_id: string
   chat_id: string
+  guest_message_id: string | null
+  emoji: string | null
   created_at?: Date | undefined
   updated_at?: Date | undefined
   deleted_at?: Date | undefined
@@ -76,6 +80,19 @@ export class messages
             model: 'chats',
             key: 'id',
           },
+        },
+        guest_message_id: {
+          type: DataTypes.UUID,
+          allowNull: true,
+          references: {
+            model: 'messages',
+            key: 'id',
+          },
+        },
+        emoji: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          defaultValue: null,
         },
         created_at: {
           type: DataTypes.DATE,

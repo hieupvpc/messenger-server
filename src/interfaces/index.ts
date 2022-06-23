@@ -24,6 +24,7 @@ export interface ICreateMessageDto {
   sender_id: string
   receiver_id: string
   chat_id: string
+  guest_message_id: null
 }
 
 export interface IUpdateNicknameDto {
@@ -74,4 +75,12 @@ export enum MAIN_EMOJI {
   GHOST = 'fas fa-ghost',
   APPLE = 'fab fa-apple',
   BAN = 'fas fa-ban',
+}
+
+export enum MESSAGE_EMOJI {
+  LOVE = '❤️',
+  LAUGH = '🤣',
+  SAD = '😞',
+  ANGRY = '😡',
+  WOW = '😮',
 }

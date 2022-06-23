@@ -10,5 +10,7 @@ export const messageRouter = ({ middlwares, controllers }: ICradle) => {
 
   routers.get('/get', verifyAccessToken, messageController.getListMessages)
 
+  routers.patch('/emoji', verifyAccessToken, messageController.updateEmoji)
+
   return routers
 }

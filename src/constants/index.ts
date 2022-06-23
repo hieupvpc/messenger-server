@@ -1,4 +1,9 @@
-import { BACKGROUND_COLOR, MAIN_COLOR, MAIN_EMOJI } from '../interfaces'
+import {
+  BACKGROUND_COLOR,
+  MAIN_COLOR,
+  MAIN_EMOJI,
+  MESSAGE_EMOJI,
+} from '../interfaces'
 
 export const MAIN_COLORS: MAIN_COLOR[] = [
   MAIN_COLOR.DANGER,
@@ -31,3 +36,12 @@ export const MAIN_EMOJIS: string[] = [
 ]
 
 export const LIMIT_MESSAGES: number = 20
+
+export const MESSAGE_EMOJIS: Array<string | null> = [
+  MESSAGE_EMOJI.ANGRY,
+  MESSAGE_EMOJI.LAUGH,
+  MESSAGE_EMOJI.LOVE,
+  MESSAGE_EMOJI.SAD,
+  MESSAGE_EMOJI.WOW,
+  null,
+]

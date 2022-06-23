@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import { ICreateMessageDto, TYPE_MESSAGE } from '../interfaces'
 import { ICradle } from '../container'
+import { MESSAGE_EMOJIS } from '../constants'
 
 export const messageController = ({ helpers, services, cache }: ICradle) => {
   const { responseHelper, cacheHelper } = helpers
@@ -56,12 +57,21 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
         sender_id: req.userId,
         receiver_id: guestId,
         chat_id,
+        guest_message_id: null,
       })
       const newMessage = await messageService.createOne(
         createNewMessage(chatId),
       )
       const newGuestMessage = await messageService.createOne(
         createNewMessage(guestChatId),
+      )
+      await messageService.udpateOneGuestMessageId(
+        newGuestMessage.id,
+        newMessage.id,
+      )
+      await messageService.udpateOneGuestMessageId(
+        newMessage.id,
+        newGuestMessage.id,
       )
       await chatService.updateOneLastMessageTime(
         newMessage.created_at as Date,
@@ -114,8 +124,34 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
     }
   }
 
+  const updateEmoji = async (req: any, res: Response) => {
+    const emoji = req.body.emoji?.trim() || null
+    const messageId = req.body.message_id?.trim()
+    const guestMessageId = req.body.guest_message_id?.trim() || null
+    const chatId = req.body.chat_id?.trim() || null
+    const guestChatId = req.body.guest_chat_id?.trim() || null
+    if (!MESSAGE_EMOJIS.includes(emoji))
+      return responseHelper.badRequest(res, 'Invalid emoji!')
+    try {
+      console.log(emoji, messageId, guestMessageId)
+      await messageService.updateOneEmoji(emoji, messageId)
+      await messageService.updateOneEmoji(emoji, guestMessageId)
+      await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(chatId))
+      await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(guestChatId))
+      return responseHelper.responseSuccess(res, 'Update emoji successfully', {
+        emoji,
+        message_id: messageId,
+        guest_message_id: guestMessageId,
+      })
+    } catch (error) {
+      console.log(error)
+      return responseHelper.internalServerError(res)
+    }
+  }
+
   return {
     sendMessage,
     getListMessages,
+    updateEmoji,
   }
 }

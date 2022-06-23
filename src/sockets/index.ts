@@ -53,6 +53,10 @@ export const sockets = (server: HttpServer) => {
       io.emit('listen update status online', data)
     })
 
+    socket.on('vote emoji message', (data) => {
+      io.emit(`listen vote emoji message of chat: ${data.chat_id}`, data)
+    })
+
     socket.on('disconnect', () =>
       console.log(`a user disconnected ${socket.id}`),
     )

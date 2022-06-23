@@ -27,9 +27,40 @@ export const messageService = ({ initSequelize }: ICradle) => {
       },
     })
 
+  const udpateOneGuestMessageId = async (
+    guest_message_id: string,
+    message_id: string,
+  ) =>
+    await messages.update(
+      {
+        guest_message_id,
+      },
+      {
+        where: {
+          id: message_id,
+        },
+        returning: true,
+      },
+    )
+
+  const updateOneEmoji = async (emoji: string | null, message_id: string) =>
+    await messages.update(
+      {
+        emoji,
+      },
+      {
+        where: {
+          id: message_id,
+        },
+        returning: true,
+      },
+    )
+
   return {
     createOne,
     findByChatId,
     deleteByChatId,
+    udpateOneGuestMessageId,
+    updateOneEmoji,
   }
 }
