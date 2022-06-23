@@ -22,7 +22,7 @@ export interface IEnvs {
 export const envs = (): IEnvs => ({
   NODE_ENV: process.env.NODE_ENV || '',
 
-  PORT: process.env.PORT ? +process.env.PORT : 0,
+  PORT: process.env.PORT ? +process.env.PORT : 4000,
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || '',
   ENCRYPT_PASSWORD: process.env.ENCRYPT_PASSWORD || '',
 
