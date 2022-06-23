@@ -6,8 +6,7 @@
   "author": "Pham Van Hieu <phamvanhieu2404@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "server": "docker-compose up -d && tsc && node dist/index.js",
-    "service": "docker-compose up -d",
+    "server": "tsc && node dist/index.js",
     "start": "node dist/index.js",
     "dev": "nodemon dist/index.js",
     "watch": "tsc -w"
