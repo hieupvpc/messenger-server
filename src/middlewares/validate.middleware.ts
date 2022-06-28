@@ -1,5 +1,6 @@
 import { NextFunction, Response } from 'express'
 import { ICradle } from '../container'
+import _ from 'lodash'
 
 export const validateMiddlewares = ({ helpers }: ICradle) => {
   const { responseHelper, checkValue } = helpers
@@ -9,17 +10,17 @@ export const validateMiddlewares = ({ helpers }: ICradle) => {
     res: Response,
     next: NextFunction,
   ): any => {
-    const phone_or_email = req.body.phone_or_email.trim()
-    const password = req.body.password.trim()
-    const repassword = req.body.repassword.trim()
-    const fullname = req.body.fullname.trim()
+    const phone_or_email = _.trim(req.body.phone_or_email)
+    const password = _.trim(req.body.password)
+    const repassword = _.trim(req.body.repassword)
+    const fullname = _.trim(req.body.fullname)
     if (!phone_or_email || !password || !repassword || !fullname)
       return responseHelper.badRequest(res, 'You must fill in all the fields!')
     const typeAccount = validateTypeAccount(phone_or_email)
     if (!typeAccount)
       return responseHelper.badRequest(res, 'Invalid phone number or email!')
     req.type = typeAccount
-    if (password.length < 6 || password.length > 30)
+    if (_.size(password) < 6 || _.size(password) > 30)
       return responseHelper.badRequest(
         res,
         'Password must be between 6-30 characters in length!',
@@ -43,7 +44,7 @@ export const validateMiddlewares = ({ helpers }: ICradle) => {
         res,
         'Password re-entered is incorrect, please try again!',
       )
-    if (fullname.length > 50)
+    if (_.size(fullname) > 50)
       return responseHelper.badRequest(
         res,
         'Fullname cannot exceed 50 characters!',
@@ -56,8 +57,8 @@ export const validateMiddlewares = ({ helpers }: ICradle) => {
     res: Response,
     next: NextFunction,
   ): any => {
-    const phone_or_email = req.body.phone_or_email.trim()
-    const password = req.body.password.trim()
+    const phone_or_email = _.trim(req.body.phone_or_email)
+    const password = _.trim(req.body.password)
     if (!phone_or_email || !password)
       return responseHelper.badRequest(res, 'You must fill in all the fields!')
     const typeAccount = validateTypeAccount(phone_or_email)

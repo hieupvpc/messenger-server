@@ -7,13 +7,14 @@ import {
 } from '../interfaces'
 import { ICradle } from '../container'
 import { BACKGROUND_COLORS, MAIN_COLORS, MAIN_EMOJIS } from '../constants'
+import _ from 'lodash'
 
 export const chatController = ({ helpers, services, cache }: ICradle) => {
   const { responseHelper, cacheHelper } = helpers
   const { chatService, messageService } = services
 
   const createNewChat = async (req: any, res: Response) => {
-    const guestId = req.body.guest_id.trim()
+    const guestId = _.trim(req.body.guest_id)
     if (guestId === req.userId)
       return responseHelper.badRequest(res, 'Cannot create a new chat!')
     try {
@@ -61,7 +62,7 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
       let listChats = await cache.getCache(
         cacheHelper.listChatsOfUser(req.userId),
       )
-      if (listChats === null) {
+      if (_.isNil(listChats)) {
         listChats = await chatService.findByHostId(req.userId)
         await cache.setCache(cacheHelper.listChatsOfUser(req.userId), listChats)
       }
@@ -77,9 +78,9 @@ export const chatController = ({ helpers, services, cache }: ICradle) => {
   }
 
   const deleteChat = async (req: any, res: Response) => {
-    const chatId = req.query.chat_id.trim()
-    const guestId = req.query.guest_id.trim()
-    let guestChatId = req.query.guest_chat_id.trim()
+    const chatId = _.trim(req.query.chat_id)
+    const guestId = _.trim(req.query.guest_id)
+    let guestChatId: string | null = _.trim(req.query.guest_chat_id)
     if (!guestChatId || guestChatId === 'null') {
       guestChatId = null
     }

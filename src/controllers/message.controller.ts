@@ -2,16 +2,17 @@ import { Response } from 'express'
 import { ICreateMessageDto, TYPE_MESSAGE } from '../interfaces'
 import { ICradle } from '../container'
 import { MESSAGE_EMOJIS } from '../constants'
+import _ from 'lodash'
 
 export const messageController = ({ helpers, services, cache }: ICradle) => {
   const { responseHelper, cacheHelper } = helpers
   const { chatService, messageService } = services
 
   const sendMessage = async (req: any, res: Response) => {
-    const content = req.body.content.trim()
-    const type = req.body.type.trim()
-    const chatId = req.body.chat_id.trim()
-    const guestId = req.body.guest_id.trim()
+    const content = _.trim(req.body.content)
+    const type = _.trim(req.body.type) as TYPE_MESSAGE
+    const chatId = _.trim(req.body.chat_id)
+    const guestId = _.trim(req.body.guest_id)
     let guestChatId = req.body.guest_chat_id?.trim() || null
     const nicknameHost = req.body.nickname_host?.trim() || null
     const nicknameGuest = req.body.nickname_guest?.trim() || null
@@ -36,7 +37,7 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
       return responseHelper.badRequest(res, 'Cannot send message!')
     try {
       let newGuestChat = null
-      if (guestChatId === null) {
+      if (_.isNil(guestChatId)) {
         newGuestChat = await chatService.createOne({
           host_id: guestId,
           guest_id: req.userId,

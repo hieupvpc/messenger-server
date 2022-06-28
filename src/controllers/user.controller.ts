@@ -2,15 +2,16 @@ import { hash, verify } from 'argon2'
 import { Response } from 'express'
 import { sign } from 'jsonwebtoken'
 import { ICradle } from '../container'
+import _ from 'lodash'
 
 export const userController = ({ helpers, services, envs, cache }: ICradle) => {
   const { responseHelper, convertHelper, cacheHelper } = helpers
   const { userService } = services
 
   const registerNewUser = async (req: any, res: Response) => {
-    const phoneOrEmail = req.body.phone_or_email.trim()
-    const password = req.body.password.trim()
-    const fullname = req.body.fullname.trim()
+    const phoneOrEmail = _.trim(req.body.phone_or_email)
+    const password = _.trim(req.body.password)
+    const fullname = _.trim(req.body.fullname)
     try {
       const existingUser =
         req.type === 'email'
@@ -51,8 +52,8 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
   }
 
   const loginAccountUser = async (req: any, res: Response) => {
-    const phoneOrEmail = req.body.phone_or_email.trim()
-    const password = req.body.password.trim()
+    const phoneOrEmail = _.trim(req.body.phone_or_email)
+    const password = _.trim(req.body.password)
     try {
       const existingUser =
         req.type === 'email'
@@ -126,7 +127,7 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
   const getMyInfo = async (req: any, res: Response) => {
     try {
       let myInfo = await cache.getCache(cacheHelper.infoOfUser(req.userId))
-      if (myInfo === null) {
+      if (_.isNil(myInfo)) {
         myInfo = await userService.findOneById(req.userId)
         await cache.setCache(cacheHelper.infoOfUser(req.userId), myInfo)
       }
@@ -147,7 +148,7 @@ export const userController = ({ helpers, services, envs, cache }: ICradle) => {
       let listUsers = await cache.getCache(
         cacheHelper.listUsersSearchedByPattern(pattern),
       )
-      if (listUsers === null) {
+      if (_.isNil(listUsers)) {
         listUsers = await userService.findByPattern(pattern)
         await cache.setCache(
           cacheHelper.listUsersSearchedByPattern(pattern),

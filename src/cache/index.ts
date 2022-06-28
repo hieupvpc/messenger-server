@@ -1,5 +1,6 @@
 import { createClient } from 'redis'
 import { ICradle } from '../container'
+import _ from 'lodash'
 
 export const cache = ({ envs }: ICradle) => {
   const redisClient = createClient({
@@ -21,7 +22,7 @@ export const cache = ({ envs }: ICradle) => {
 
   const delCacheByPattern = async (pattern: string) => {
     const keys = await redisClient.keys(pattern)
-    keys.length > 0 && (await redisClient.del(keys))
+    _.size(keys) > 0 && (await redisClient.del(keys))
   }
 
   return {
