@@ -134,7 +134,6 @@ export const messageController = ({ helpers, services, cache }: ICradle) => {
     if (!MESSAGE_EMOJIS.includes(emoji))
       return responseHelper.badRequest(res, 'Invalid emoji!')
     try {
-      console.log(emoji, messageId, guestMessageId)
       await messageService.updateOneEmoji(emoji, messageId)
       await messageService.updateOneEmoji(emoji, guestMessageId)
       await cache.delCacheByPattern(cacheHelper.listMessagesOfChat(chatId))
